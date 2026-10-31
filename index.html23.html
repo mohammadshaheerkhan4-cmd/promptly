@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Promptly – Trending AI Prompts</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#faf5ff;--card:#fff;--tx:#1e1236;--mu:#6e5f8f;--ac:#7c3aed;--ac2:#ec4899;--bd:#eadcff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0a1f;--card:#1a1233;--tx:#f5f0ff;--mu:#a89cc8;--ac:#a78bfa;--ac2:#f472b6;--bd:#2e2350}}
+:root[data-theme="dark"]{--bg:#0f0a1f;--card:#1a1233;--tx:#f5f0ff;--mu:#a89cc8;--ac:#a78bfa;--ac2:#f472b6;--bd:#2e2350}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg) radial-gradient(60% 340px at 50% 0,rgba(168,85,247,.28),transparent) no-repeat;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 48px}
+header{padding:28px 0 8px}
+.logo{font-weight:800;font-size:1.5rem;letter-spacing:-.5px}.logo b{background:linear-gradient(90deg,#7c3aed,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:1.75rem;line-height:1.2;margin:14px 0 8px;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+p.sub{color:var(--mu);margin:0 0 14px}
+input,select{width:100%;padding:12px;border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);font:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0}
+.chip{flex:none;padding:8px 14px;border:1px solid var(--bd);border-radius:99px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border-color:transparent}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 18px rgba(124,58,237,.08)}
+.tag{font-size:.72rem;color:var(--ac2);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.card h3{margin:0;font-size:1rem}
+.card p{margin:0;color:var(--mu);font-size:.88rem;flex:1}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:10px 14px;border:0;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.row .btn{flex:1;padding:9px 8px;font-size:.84rem}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+section{margin-top:36px}
+h2{font-size:1.25rem;margin:0 0 10px}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px}
+.form{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+.form .full{grid-column:1/-1}
+.out{white-space:pre-wrap;margin-top:12px;min-height:50px}
+.ad{border:2px dashed var(--bd);border-radius:12px;padding:18px;text-align:center;color:var(--mu);margin:20px 0;font-size:.85rem}
+.pro{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border-radius:16px;padding:20px}
+.pro .btn{background:#fff;color:#4c1d95;margin-top:10px}
+footer{margin-top:40px;color:var(--mu);font-size:.85rem;text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#2e1065;color:#fff;padding:10px 18px;border-radius:99px;opacity:0;transition:.2s;pointer-events:none}
+#toast.show{opacity:1}
+@media(max-width:520px){.form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">Prompt<b>ly</b></div>
+<h1>Copy a prompt. Create scroll-stopping AI images.</h1>
+<p class="sub">Works with ChatGPT, Gemini and Midjourney. Create stunning images and share them with #Promptly.</p>
+<div class="row" style="margin-bottom:12px"><a class="btn" id="siteShare" target="_blank" rel="noopener">Recommend to a Friend</a></div>
+<input id="q" type="search" placeholder="Search: ghibli, polaroid, chai, logo, villa…">
+<div class="chips" id="chips"></div>
+</header>
+
+<p class="sub" id="cnt"></p>
+<div class="grid" id="grid"></div>
+<div style="text-align:center;margin-top:16px"><button class="btn alt" id="more">Aur Dikhao</button></div>
+
+<div class="ad">Ad Slot 1 – yahan Google AdSense ya sponsor banner lagayein</div>
+
+<section>
+<h2>Apna Prompt Banao</h2>
+<div class="box">
+<div class="form">
+<input class="full" id="subj" placeholder="Subject likho, e.g. girl sipping chai on a Lahore rooftop">
+<select id="style"><option>Studio Ghibli painting</option><option>cinematic film still</option><option>vintage 90s film photo</option><option>Y2K chrome aesthetic</option><option>3D Pixar style</option><option>dark academia</option><option>minimal vector</option></select>
+<select id="light"><option>golden hour lighting</option><option>soft studio lighting</option><option>neon glow</option><option>dramatic rim light</option><option>natural daylight</option></select>
+<select id="ratio" class="full"><option>--ar 4:5</option><option>--ar 1:1</option><option>--ar 16:9</option><option>--ar 9:16</option></select>
+<button class="btn full" id="gen">Prompt Generate Karo</button>
+</div>
+<div class="out" id="out"></div>
+<button class="btn alt" id="cpy" style="display:none;margin-top:8px">Copy</button>
+</div>
+</section>
+
+<section>
+<h2>Premium Prompt Packs</h2>
+<div class="pro">
+<strong>500+ Pro Prompts – Rs. 499</strong>
+<p style="margin:6px 0 0;opacity:.92">Trending aesthetics, logo, product shoot aur real estate packs. Ek baar payment, lifetime access.</p>
+<a class="btn" href="https://wa.me/923172966144?text=Promptly%20Pro%20Pack" target="_blank" rel="noopener">Order on WhatsApp</a>
+</div>
+</section>
+
+<div class="ad">Ad Slot 2 – affiliate links ya sponsor (AI tools, courses)</div>
+<footer>© Promptly · Made in Pakistan</footer>
+</div>
+<div id="toast">Copied ✓</div>
+
+<script>
+var SITE="https://mohammadshaheerkhan4-cmd.github.io/promptly/";
+var LT=["golden hour lighting","soft studio lighting","neon glow","dramatic rim light","natural daylight"];
+var ST=["photorealistic","cinematic film still","3D render","anime illustration","watercolor painting","vector flat design"];
+var W=" of the person in my uploaded photo";
+var G=[
+{c:"Trending",n:["Ghibli Portrait","Pixar 3D Character","Action Figure Box","Desk Miniature","Bollywood 90s Poster","Retro Polaroid","Claymation","Dark Academia","Old Money Editorial","Y2K Chrome","Coquette Pink","Cyberpunk Neon","Double Exposure","Truck Art Portrait","Lollywood Poster"],
+s:["Studio Ghibli hand-painted anime portrait"+W+", face kept identical","Pixar style 3D animated character"+W+", face kept identical","collectible action figure"+W+" inside a blister pack box with accessories and name label","tiny 3D miniature figurine"+W+" standing on a desk beside a monitor showing the design","vintage 90s Bollywood movie poster starring the person in my uploaded photo, bold hand-painted typography","retro polaroid photo"+W+" with film grain and light leaks","cute claymation character"+W+", fingerprint texture","dark academia portrait"+W+", tweed jacket, old library","old money quiet luxury editorial photo"+W+", linen and cream tones","Y2K chrome aesthetic portrait"+W+", glossy holographic details","coquette soft pink aesthetic portrait"+W+", bows and lace","cyberpunk neon portrait"+W+", glowing Urdu signboards","double exposure portrait"+W+" blended with a city skyline","Pakistani truck art style portrait"+W+", ornate floral borders","retro Lollywood film poster starring the person in my uploaded photo, painted billboard look"],
+e:["at Karachi sea view sunset","in a Lahore old city lane","by a rainy cafe window","with northern Pakistan mountains behind","on a rooftop at golden hour","in a cozy bookshop"],
+st:["soft pastel colors","ultra detailed 8k","dreamy glow","cinematic film grain","vibrant saturated colors","moody tones"]},
+{c:"Desi",s:["Chai dhaba at midnight","Truck art painted truck","Badshahi Mosque Lahore","Clifton beach Karachi","Hunza valley in autumn","Chand raat bangles stall","Mehndi night decor","Rickshaw art street"],
+e:["wide shot","close-up detail","aerial view"],
+st:["Studio Ghibli painting","vintage 90s film photo","cinematic film still","watercolor illustration","neon cyberpunk","miniature tilt-shift","golden hour photography","pastel illustration"]},
+{c:"Portrait",s:["young man in kurta","Pakistani businesswoman","bearded man in sherwani","girl in dupatta","elderly man with kind eyes","college student with backpack","fitness coach","streetwear model"],e:["on a Karachi street at dusk","in a modern cafe","against a rooftop skyline","in a studio with grey backdrop"]},
+{c:"Logo",s:["lion","falcon","coffee cup","house","shopping bag","rocket","tree","crescent moon"],e:["green and gold palette","black and white","blue and purple gradient","red and cream"],st:["minimal vector logo","3D glossy logo","hand drawn logo","line art logo","gradient flat logo","emblem badge logo"]},
+{c:"Product",s:["wireless earbuds","smart watch","sneakers","smartphone","perfume bottle","sunglasses","backpack","power bank"],e:["on black marble","floating with water splash","on pastel background","in a lifestyle scene"]},
+{c:"Real Estate",s:["modern villa","gated community aerial view","luxury apartment interior","commercial plaza","farmhouse","penthouse terrace","kitchen interior","bedroom suite"],e:["at golden hour","at night with warm lights","on a sunny day","in the rain with reflections"]}
+];
+var P=[];
+G.forEach(function(g){g.s.forEach(function(s,i){var nm=g.n?g.n[i]:s;nm=nm.charAt(0).toUpperCase()+nm.slice(1);
+g.e.forEach(function(e){(g.st||ST).forEach(function(y){var k=P.length;P.push([nm+" – "+e,g.c,s+", "+e+", "+y+", "+LT[k%5]+", ultra detailed --ar 4:5"])})})})});
+var r=7;for(var i=P.length-1;i>0;i--){r=(r*1103515245+12345)&2147483647;var j=r%(i+1),t=P[i];P[i]=P[j];P[j]=t}
+var cats=["All","Trending","Desi","Portrait","Logo","Product","Real Estate"],cur="All",shown=48,fav={};
+try{fav=JSON.parse(localStorage.getItem("fav")||"{}")}catch(e){}
+function $(i){return document.getElementById(i)}
+function toast(m){var t=$("toast");t.textContent=m||"Copied ✓";t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1300)}
+function copy(s){
+  try{navigator.clipboard.writeText(s).then(function(){toast()},fb)}catch(e){fb()}
+  function fb(){var a=document.createElement("textarea");a.value=s;document.body.appendChild(a);a.select();try{document.execCommand("copy");toast()}catch(e){}a.remove()}
+}
+function shareLink(a,title,text){
+  a.href="https://wa.me/?text="+encodeURIComponent(text);
+  a.onclick=function(ev){if(navigator.share){ev.preventDefault();navigator.share({title:title,text:text}).catch(function(){})}};
+}
+function chips(){var c=$("chips");c.innerHTML="";cats.forEach(function(k){var b=document.createElement("button");b.className="chip"+(k===cur?" on":"");b.textContent=k;b.onclick=function(){cur=k;shown=48;chips();render()};c.appendChild(b)})}
+function render(){
+  var q=$("q").value.toLowerCase(),g=$("grid"),m=0;g.innerHTML="";
+  P.forEach(function(x,i){
+    if(cur!=="All"&&x[1]!==cur)return;
+    if(q&&(x[0]+x[1]+x[2]).toLowerCase().indexOf(q)<0)return;
+    m++;if(m>shown)return;
+    var d=document.createElement("div");d.className="card";
+    d.innerHTML='<span class="tag"></span><h3></h3><p></p><div class="row"><button class="btn">Copy</button><a class="btn alt" target="_blank" rel="noopener">ChatGPT ↗</a><a class="btn alt" target="_blank" rel="noopener">Share</a><button class="btn alt"></button></div>';
+    d.children[0].textContent=x[1];d.children[1].textContent=x[0];d.children[2].textContent=x[2];
+    var bs=d.querySelectorAll("button"),as=d.querySelectorAll("a");
+    bs[0].onclick=function(){copy(x[2])};
+    as[0].href="https://chatgpt.com/?q="+encodeURIComponent(x[2]);
+    shareLink(as[1],"Promptly",x[0]+"\n\n"+x[2]+"\n\nAur trending prompts: "+SITE);
+    bs[1].textContent=fav[i]?"★":"☆";
+    bs[1].onclick=function(){fav[i]=!fav[i];try{localStorage.setItem("fav",JSON.stringify(fav))}catch(e){}render()};
+    g.appendChild(d);
+  });
+  $("more").style.display=m>shown?"inline-block":"none";$("cnt").textContent=m+" prompts";
+  if(!g.children.length)g.innerHTML='<p class="sub">Kuch nahi mila. Doosra word try karo.</p>';
+}
+var last="";
+$("gen").onclick=function(){
+  var s=$("subj").value.trim()||"a girl sipping chai on a rooftop";
+  last=s+", "+$("style").value+", "+$("light").value+", ultra detailed, high quality "+$("ratio").value;
+  $("out").textContent=last;$("cpy").style.display="inline-block";
+};
+$("cpy").onclick=function(){copy(last)};
+$("more").onclick=function(){shown+=48;render()};
+$("q").oninput=function(){shown=48;render()};
+shareLink($("siteShare"),"Promptly","Trending aesthetic AI prompts, copy karo aur ChatGPT ya Gemini mein paste karo: "+SITE);
+chips();render();
+</script>
+</body>
+</html>
